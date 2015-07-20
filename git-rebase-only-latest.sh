@@ -2,8 +2,6 @@
 set -o errexit
 set -o nounset
 
-pwd
-
 GITBRANCH=$(git branch 2>/dev/null | sed -n 's/^\*\ //p')
 UPSTREAM=`git rev-parse --abbrev-ref --symbolic-full-name @{u}`
 if [ -z "$GITBRANCH" ]; then
