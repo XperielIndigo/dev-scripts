@@ -3,10 +3,37 @@ if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 
 fi
+function PrintCurrentBranch {
+ echo $(git branch 2>/dev/null | sed -n 's/^\*\ //p')
+}
+
+function PrintMasterPath {
+  local CURRENT=$1
+  local PARENT=`git rev-parse --abbrev-ref --symbolic-full-name ${CURRENT}@{u} 2>/dev/null`
+
+  if [ -z "$CURRENT" ]; then
+    echo "No git branch found"
+    exit 1
+  fi
+
+  local PARENT_LINE=""
+  if [[ "$PARENT" == "" ]]; then
+    local PARENT_LINE=""
+    echo "${CURRENT}"
+    exit 0
+  else
+    if [[ ! "$PARENT" == "master" ]]; then
+      local PARENT_LINE="`PrintMasterPath ${PARENT}`->"
+    else
+      local PARENT_LINE="master->"
+    fi
+  fi
+  echo "${PARENT_LINE}${CURRENT}"
+}
 
 function promptcmd() {
-
   GITBRANCH=$(git branch 2>/dev/null | sed -n 's/^\*\ //p')
+  FULL_BRANCH=`PrintMasterPath ${GITBRANCH}`
 
   CURRENT_TIME_SINCE_EPOCH=`date +%s`
   COMMAND_ELAPSED_TIME=0
@@ -16,8 +43,7 @@ function promptcmd() {
   export PROMPT_TIME_SINCE_EPOCH=$CURRENT_TIME_SINCE_EPOCH
   COMMAND_ELAPSED_TIME=`show_time $COMMAND_ELAPSED_TIME`
 
-  PS1='${debian_chroot:+($debian_chroot)}\[\033[00;31m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w [${GITBRANCH}] { `date` } { $COMMAND_ELAPSED_TIME }\[\033[00m\]\n\$ '
-
+  PS1='${debian_chroot:+($debian_chroot)}\[\033[00;31m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w [${FULL_BRANCH}] { `date` } { $COMMAND_ELAPSED_TIME }\[\033[00m\]\n\$ '
 }
 
 function show_time () {
