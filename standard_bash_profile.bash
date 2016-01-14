@@ -33,8 +33,8 @@ function PrintMasterPath {
 
 function promptcmd() {
   GITBRANCH=$(git branch 2>/dev/null | sed -n 's/^\*\ //p')
-  FULL_BRANCH=`PrintMasterPath ${GITBRANCH}`
-
+#  FULL_BRANCH=`PrintMasterPath ${GITBRANCH}`
+  FULL_BRANCH=$GITBRANCH
   CURRENT_TIME_SINCE_EPOCH=`date +%s`
   COMMAND_ELAPSED_TIME=0
   if [ ! -z "$PROMPT_TIME_SINCE_EPOCH" ]; then
