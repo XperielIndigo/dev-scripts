@@ -7,4 +7,4 @@ alias android-wrapper='bazel mobile-install //src/main/java/com/xperiel/android/
 alias incremental-android-wrapper='bazel mobile-install --incremental //src/main/java/com/xperiel/android/api:wrapper --fetch=false'
 alias test-java-small='bazel test //src/test/java/... --test_size_filters=small --fetch=false'
 alias fix-lint='./buildtools/dev/fix-common-cc-lint.py'
-alias recent-commits='git log master --oneline --reverse | nl | tac | head -n 20'
+alias recent-commits='git log master --oneline --reverse | nl | tail -r | head -n 20'
